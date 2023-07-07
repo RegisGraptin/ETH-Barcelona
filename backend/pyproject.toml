@@ -9,6 +9,10 @@ readme = "README.md"
 python = "^3.10"
 fastapi = "^0.100.0"
 uvicorn = {extras = ["standard"], version = "^0.22.0"}
+python-multipart = "^0.0.6"
+openai = "^0.27.8"
+llama-index = "^0.7.2"
+html5lib = "^1.1"
 
 
 [build-system]
