@@ -1,5 +1,7 @@
+import glob
 import hashlib
 import json
+from pathlib import Path
 from typing import Annotated, Optional, Union
 import uuid
 import os
@@ -219,8 +221,28 @@ async def analyse_smartcontract(contract: UploadFile, use_database: bool = False
 
 
 
-@app.get("/dummy_output")
-def dummy_output():
-    with open("result.json") as file:
-        data = json.loads(file.read())
+@app.get("/vulnerabilities")
+def fetch_vulnerabilities():
+
+    data = {}
+
+    smartcontracts = glob.glob("./data/*.sol")
+
+    for smartcontract in smartcontracts:
+        filename_id = Path(smartcontract).stem
+
+        # Read smart contract
+        with open(smartcontract, 'r') as file:
+            smartcontract_content = file.read() 
+
+        # Read audit
+        with open("./data/" + filename_id + ".txt", 'r') as file:
+            audit_content = file.read() 
+
+        data[filename_id] = {
+            "smartcontract": smartcontract_content,
+            "audit": audit_content
+        }
+
     return data
+
