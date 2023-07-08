@@ -76,6 +76,7 @@ def read_all_user_data():
 async def create_upoad_file_from_address(
         audit: Annotated[bytes, File()], 
         contract_address: Annotated[str, Form()],
+        user_address: Annotated[str, Form()],
     ):
 
     # Fetch the data from eth scan
@@ -113,6 +114,12 @@ async def create_upoad_file_from_address(
     audit_path = folder + "_audit.txt"
     with open(audit_path, "w") as file:
         file.write(audit.decode())
+
+    audit_hash = sha256sum(audit_path)
+    contract_hash = sha256sum(source_code_path)
+    hash_data = hashlib.sha256(audit_hash.encode() + contract_hash.encode())
+
+    store_user_data(user_address, "pending", hash_data.hexdigest())
 
     return {
         "contract": source_code_path,
