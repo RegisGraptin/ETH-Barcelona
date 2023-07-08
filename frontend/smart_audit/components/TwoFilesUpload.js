@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import { MuiFileInput } from 'mui-file-input'
 
-const TwoFilesUpload = ({ user_address }) => {
+const TwoFilesUpload = ({ resultFunction, user_address }) => {
 
     const [smartContractFile, setSmartContractFile] = useState("");
     const [auditFile, setAuditFile] = useState(null);
@@ -37,9 +37,11 @@ const TwoFilesUpload = ({ user_address }) => {
             .then((res) => {
                 alert("File Upload success");
                 console.log(res);
+                resultFunction(true)
             })
             .catch((err) => {
                 console.log(err);
+                resultFunction(false)
             });
     };
 

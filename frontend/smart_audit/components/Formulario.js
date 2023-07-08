@@ -7,7 +7,7 @@ import { TextField } from '@mui/material'
 
 import axios from 'axios';
 
-const Formulario = ({ user_address }) => {
+const Formulario = ({ resultFunction, user_address }) => {
 
     const [smartContractAddress, setSmartContractAddress] = useState("");
     const [auditFile, setAuditFile] = useState(null);
@@ -19,7 +19,7 @@ const Formulario = ({ user_address }) => {
 
         // Prevent redirection
         e.preventDefault();
-        
+
         // Check that we have an address
         if (smartContractAddress.trim() === '') {
             guardarError(true);
@@ -35,6 +35,9 @@ const Formulario = ({ user_address }) => {
 
         console.log(formData);
 
+        // console.log("Result:" + result );
+        
+
         axios
             .post(
                 "http://localhost:8000/audit/upload/address",
@@ -49,9 +52,19 @@ const Formulario = ({ user_address }) => {
             .then((res) => {
                 alert("File Upload success");
                 console.log(res);
+                // result = true
+
+                resultFunction(true);
+
+                // setState
+                // console.log("Result:" + result );
             })
             .catch((err) => {
                 console.log(err);
+                // result = false
+                // console.log("Result:" + result );
+
+                resultFunction(false);
             });
     };
 
@@ -75,13 +88,13 @@ const Formulario = ({ user_address }) => {
                                 <div className="col-md-6">
                                     <div className="form-group">
                                         <h2>Smart Contract Hash</h2>
-                                        
-                                        <TextField 
-                                            id="outlined-basic" 
-                                            label="Smart Contract Hash" 
-                                            variant="outlined" 
+
+                                        <TextField
+                                            id="outlined-basic"
+                                            // label="Smart Contract Hash"
+                                            variant="outlined"
                                             placeholder="0X24567..."
-                                            fullWidth="true"
+                                            fullWidth={true}
                                             onChange={(e) => setSmartContractAddress(e.target.value)}
                                             value={smartContractAddress}
                                         />
@@ -90,8 +103,8 @@ const Formulario = ({ user_address }) => {
                                 <div className="col-md-6">
                                     <div className="form-group">
                                         <h2>Upload the audit</h2>
-                                        <MuiFileInput 
-                                            value={auditFile} 
+                                        <MuiFileInput
+                                            value={auditFile}
                                             onChange={(newFile) => setAuditFile(newFile)}
                                         />
                                     </div>
@@ -109,6 +122,8 @@ const Formulario = ({ user_address }) => {
 
 
                     </form>
+
+
                 </div>
             </div>
 
