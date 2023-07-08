@@ -1,7 +1,9 @@
+import hashlib
 import json
 from typing import Annotated, Optional, Union
 import uuid
 import os
+import json
 
 import openai
 
@@ -15,9 +17,9 @@ from src.chatgpt_extend import ChatGPT, ChatGPTExtend
 config = dotenv_values(".env") 
 
 openai_key = config.get("OPENAI_KEY")
-openai.api_key = openai_key
-
 eth_scan_key = config.get("ETHERSCAN_API_KEY")
+
+openai.api_key = openai_key
 
 
 app = FastAPI()
@@ -26,13 +28,51 @@ app = FastAPI()
 FOLDER_DATA = "./data/"
 
 
+def sha256sum(file_path):
+    h = hashlib.sha256()
+
+    with open(file_path, 'rb') as file:
+        while True:
+            # Reading is buffered, so we can read smaller chunks.
+            chunk = file.read(h.block_size)
+            if not chunk:
+                break
+            h.update(chunk)
+
+    return h.hexdigest()
+
 def write_on_disk(path: str, upload_file: UploadFile):
     with open(path, 'wb') as out_file:
         content = upload_file.file.read() 
         out_file.write(content)
 
+def store_user_data(user_address, key, data_hash):
+    
+    with open('data.json', 'r') as fp:
+        data = json.load(fp)
 
-@app.post("/audit/upload")
+    current_user_data = data.get(user_address)
+    if current_user_data is None:
+        data[user_address] = {}
+        current_user_data = {}
+
+    key_value = current_user_data.get(key, [])
+    key_value.append(data_hash)
+
+    current_user_data[key] = key_value
+    data[user_address] = current_user_data
+
+    with open('data.json', 'w') as fp:
+        json.dump(data, fp)
+
+
+@app.get("/audit/list")
+def read_all_user_data():
+    with open('data.json', 'r') as fp:
+        data = json.load(fp)
+    return data
+
+@app.post("/audit/upload/address")
 async def create_upoad_file_from_address(
         audit: Annotated[bytes, File()], 
         contract_address: Annotated[str, Form()],
@@ -82,30 +122,43 @@ async def create_upoad_file_from_address(
         
 
 
-@app.post("/audit/upload")
+@app.post("/audit/upload/files")
 async def create_upload_file(
-    audit: UploadFile, 
-    contract: UploadFile):
+    audit: Annotated[bytes, File()], 
+    contract: Annotated[bytes, File()],
+    user_address: Annotated[str, Form()],
+    ):
 
-    _, ext = os.path.splitext(contract.filename)
+    audit = audit.decode()
+    contract = contract.decode()
+
+    audit_ext = ".txt"
+    contract_ext = ".sol"
 
     filename = str(uuid.uuid4())
 
     folder = FOLDER_DATA + filename
 
     # Read and write the input contract on disk
-    contract_path = folder + "_contract" + ext
-    write_on_disk(contract_path, contract)
-
-    _, ext = os.path.splitext(audit.filename)
+    contract_path = folder + "_contract" + contract_ext
+    with open(contract_path, "w") as file:
+        file.write(contract)
 
     # Write the audit on disk
-    audit_path = folder + "_audit" + ext
-    write_on_disk(audit_path, audit)
+    audit_path = folder + "_audit" + audit_ext
+    with open(audit_path, "w") as file:
+        file.write(audit)
     
+
+    audit_hash = sha256sum(audit_path)
+    contract_hash = sha256sum(contract_path)
+    hash_data = hashlib.sha256(audit_hash.encode() + contract_hash.encode())
+
+    store_user_data(user_address, "pending", hash_data.hexdigest())
+
     return {
-        "contract": contract.filename,
-        "audit": audit.filename
+        "contract": contract_path,
+        "audit": audit_path
     }
 
 
