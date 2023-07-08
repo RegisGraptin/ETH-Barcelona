@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import styles from "../styles/Home.module.css";
 
+import { MuiFileInput } from 'mui-file-input'
+
+import { TextField } from '@mui/material'
+
 import axios from 'axios';
 
 const Formulario = ({ user_address }) => {
@@ -70,12 +74,14 @@ const Formulario = ({ user_address }) => {
                             <div className="row">
                                 <div className="col-md-6">
                                     <div className="form-group">
-                                        <label>Smart Contract Hash </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            name="SChash"
+                                        <h2>Smart Contract Hash</h2>
+                                        
+                                        <TextField 
+                                            id="outlined-basic" 
+                                            label="Smart Contract Hash" 
+                                            variant="outlined" 
                                             placeholder="0X24567..."
+                                            fullWidth="true"
                                             onChange={(e) => setSmartContractAddress(e.target.value)}
                                             value={smartContractAddress}
                                         />
@@ -83,10 +89,10 @@ const Formulario = ({ user_address }) => {
                                 </div>
                                 <div className="col-md-6">
                                     <div className="form-group">
-                                        <label>Upload a file </label>
-                                        <input type="file"
-                                            onChange={(e) => setAuditFile(e.target.files[0])}
-                                            name={auditFile}
+                                        <h2>Upload the audit</h2>
+                                        <MuiFileInput 
+                                            value={auditFile} 
+                                            onChange={(newFile) => setAuditFile(newFile)}
                                         />
                                     </div>
                                 </div>

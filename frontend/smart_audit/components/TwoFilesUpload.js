@@ -3,6 +3,8 @@ import styles from "../styles/Home.module.css";
 
 import axios from 'axios';
 
+import { MuiFileInput } from 'mui-file-input'
+
 const TwoFilesUpload = ({ user_address }) => {
 
     const [smartContractFile, setSmartContractFile] = useState("");
@@ -58,19 +60,19 @@ const TwoFilesUpload = ({ user_address }) => {
                             <div className="row">
                                 <div className="col-md-6">
                                     <div className="form-group">
-                                        <label>Smart Contract File </label>
-                                        <input type="file"
-                                            onChange={(e) => setSmartContractFile(e.target.files[0])}
-                                            name={smartContractFile}
+                                        <h2>Upload the vulnerable smartcontract</h2>
+                                        <MuiFileInput 
+                                            value={smartContractFile} 
+                                            onChange={(newFile) => setSmartContractFile(newFile)}
                                         />
                                     </div>
                                 </div>
                                 <div className="col-md-6">
                                     <div className="form-group">
-                                        <label>Upload a file </label>
-                                        <input type="file"
-                                            onChange={(e) => setAuditFile(e.target.files[0])}
-                                            name={auditFile}
+                                        <h2>Upload the audit</h2>
+                                        <MuiFileInput 
+                                            value={auditFile} 
+                                            onChange={(newFile) => setAuditFile(newFile)}
                                         />
                                     </div>
                                 </div>
