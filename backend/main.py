@@ -8,6 +8,7 @@ import json
 import openai
 
 from fastapi import FastAPI, File, Form, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import dotenv_values
 import requests
@@ -21,8 +22,18 @@ eth_scan_key = config.get("ETHERSCAN_API_KEY")
 
 openai.api_key = openai_key
 
-
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 FOLDER_DATA = "./data/"
