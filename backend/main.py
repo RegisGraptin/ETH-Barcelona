@@ -211,6 +211,12 @@ async def analyse_smartcontract(contract: UploadFile, use_database: bool = False
 
     result = chatgpt.run(prompt)
 
-    return {"text": result}
+    return {"result": result}
 
 
+
+@app.get("/dummy_output")
+def dummy_output():
+    with open("result.json") as file:
+        data = json.loads(file.read())
+    return data
