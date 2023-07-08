@@ -11,6 +11,7 @@ import { RequestLogicTypes } from '@requestnetwork/types';
 //Diego's import
 import React, { Fragment, useEffect } from 'react';
 import Formulario from '../components/Formulario'
+import TwoFilesUpload from '../components/TwoFilesUpload'
 
 
 
@@ -65,6 +66,11 @@ const Home: NextPage = () => {
           <Formulario
             user_address={address}
           />
+
+          {/* <TwoFilesUpload
+            user_address={address}
+          /> */}
+
         </Fragment>
       </main>
 
