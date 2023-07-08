@@ -9,6 +9,8 @@ model_id = "tiiuae/falcon-7b"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True)
 
+# https://huggingface.co/blog/falcon
+
 trainer = SFTTrainer(
     model,
     tokenizer=tokenizer,
