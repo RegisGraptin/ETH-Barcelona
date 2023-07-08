@@ -66,6 +66,7 @@ button {
 label {
   font-family: 'Work Sans', sans-serif;
   font-size: 22px;
+  margin-top: 5%;
 }
 
 legend {
@@ -103,5 +104,20 @@ form.card{
 p {
   color: red;
   font-weight: bold;
+  font-size: large;
+}
+
+.success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  margin: 10%;
+}
+
+.error {
+  color: rgb(243, 6, 6);
+  background-color: #f0c9c1;
+  border-color: #ecc1bc;
+  margin: 10%;
 }
 

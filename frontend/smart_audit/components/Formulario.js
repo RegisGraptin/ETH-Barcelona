@@ -78,6 +78,8 @@ const Formulario = ({inputAI}) => {
                                                                             />
                                                                 </div>
                                                             </div>
+                                                            &nbsp;
+                                                            &nbsp;
                                                             <div className="col-md-6">
                                                                      <div className="form-group">
                                                                             <label>Upload a file </label>
