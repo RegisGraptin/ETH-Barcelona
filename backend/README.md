@@ -18,17 +18,19 @@ curl localhost:8000/audit/upload \
 
 ## Example of sending a smart contract address with an audit as a file
 
+```bash
 curl \
    -F contract_address="0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413" \
    -F audit=@example.txt \
    localhost:8000/audit/upload
-
+```
 
 ## Example of senging a smart contract for auditing
 
+```bash
 curl localhost:8000/audit/analyse \
    -F contract=@vuln/random.sol
-
+```
 
 # Smart contract issues
 
