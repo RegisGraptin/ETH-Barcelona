@@ -12,6 +12,8 @@ import { RequestLogicTypes } from '@requestnetwork/types';
 import React, { Fragment, useEffect } from 'react';
 import Formulario from '../components/Formulario'
 import TwoFilesUpload from '../components/TwoFilesUpload'
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 
 
@@ -25,6 +27,10 @@ const Home: NextPage = () => {
   const [paymentLink, setPaymentLink] = useState('');
   const { address } = useAccount();
   const [data, inputAI] = useState({});
+
+
+  const [activateFileInput, setActivateFileInput] = useState(false);
+
   const handleCreateRequest = async () => {
     setRequestAmount('100');
     const request: PaymentRequestProps = {
@@ -49,6 +55,16 @@ const Home: NextPage = () => {
           name="description"
         />
         <link href="/favicon.ico" rel="icon" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
+
+
       </Head>
 
       <main className={styles.main}>
@@ -62,14 +78,25 @@ const Home: NextPage = () => {
             <h2>Create payment &rarr;</h2>
           </a>
         </div>
+        
+        
         <Fragment>
-          <Formulario
-            user_address={address}
-          />
 
-          {/* <TwoFilesUpload
-            user_address={address}
-          /> */}
+          <FormControlLabel control={
+            <Switch 
+              defaultChecked 
+              onChange={(e) => setActivateFileInput(!activateFileInput)} />} 
+              label={
+                activateFileInput
+                ? "Address uploads mode"
+                : "File uploads mode" 
+              }
+            />
+
+          {activateFileInput
+          ? <Formulario user_address={address} />
+          : <TwoFilesUpload user_address={address} />
+          }
 
         </Fragment>
       </main>
