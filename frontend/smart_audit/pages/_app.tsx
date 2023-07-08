@@ -5,6 +5,9 @@ import type { AppProps } from "next/app";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { mainnet, gnosis, gnosisChiado } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
+//import Menu from '../components/Menu'
+//import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+//import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, gnosis, gnosisChiado],
@@ -25,10 +28,11 @@ const wagmiConfig = createConfig({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
-        <Component {...pageProps} />
+        <Component {...pageProps} /> 
       </RainbowKitProvider>
     </WagmiConfig>
   );

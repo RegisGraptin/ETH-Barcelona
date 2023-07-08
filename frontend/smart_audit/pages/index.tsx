@@ -11,12 +11,13 @@ import { RequestLogicTypes } from '@requestnetwork/types';
 //Diego's import
 import React, { Fragment, useEffect } from 'react';
 import Formulario from '../components/Formulario'
+import Menu from '../components/Menu'
+//import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import TwoFilesUpload from '../components/TwoFilesUpload'
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Result from '../components/Result'
-
 
 
 
@@ -53,6 +54,7 @@ const Home: NextPage = () => {
   //Diego's states*******************************************************************
   return (
     <div className={styles.container}>
+      <Menu />
       <Head>
         <title>SC Auditors App</title>
         <meta
