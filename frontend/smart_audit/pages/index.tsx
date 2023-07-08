@@ -9,100 +9,36 @@ import styles from "../styles/Home.module.css";
 import { RequestLogicTypes } from '@requestnetwork/types';
 
 //Diego's import
-import React, {Fragment, useEffect} from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Formulario from '../components/Formulario'
-import axios from 'axios';
 
 
 
 interface PaymentRequestProps {
-	token: string | RequestLogicTypes.ICurrency,
-	payerAddress: string,
-	requestAmount: RequestLogicTypes.Amount
+  token: string | RequestLogicTypes.ICurrency,
+  payerAddress: string,
+  requestAmount: RequestLogicTypes.Amount
 }
 const Home: NextPage = () => {
   const [requestAmount, setRequestAmount] = useState('');
-	const [paymentLink, setPaymentLink] = useState('');
+  const [paymentLink, setPaymentLink] = useState('');
   const { address } = useAccount();
   const [data, inputAI] = useState({});
   const handleCreateRequest = async () => {
-		setRequestAmount('100');
-    const request: PaymentRequestProps = {     
-      token: 'USDT', 
+    setRequestAmount('100');
+    const request: PaymentRequestProps = {
+      token: 'USDT',
       payerAddress: address || 'undefined',
       requestAmount: requestAmount
-  }
-		// const requestId = PaymentRequest(request);
-		// setPaymentLink(`https://pay.request.network/${requestId}`);
+    }
+    // const requestId = PaymentRequest(request);
+    // setPaymentLink(`https://pay.request.network/${requestId}`);
 
 
-	};
+  };
   //Diego's states*******************************************************************
-    //defininr el state
-    useEffect(()=> {
-      
-      if(Object.keys(data).length===0) return;
 
-      // Function to make the POST request
-        const postData = async () => {
-          try {
-            console.log(data)
-            console.log('before request')
-            /*
-            const formData = new FormData();
-            formData.append('user_address', '0x30c96825922151a293175993B74216D9FacDb668');
-            formData.append('contract_address', '0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413');
-            formData.append('audit', data);
-
-
-            const response = await axios.post('http://localhost:8000/audit/upload/address', formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data', // Set the content type to multipart/form-data
-              }
-            });
-            */
-            const response = await axios.post('http://localhost:8000/audit/upload/address', {
-              // Request body data
-              user_address: '0x30c96825922151a293175993B74216D9FacDb668',
-              contract_address: '0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413',
-              audit:data
-            });
-            
-            console.log(response.data); // Response data from the server
-          } catch (error) {
-            console.error(error); // Handle error
-          }
-        };
-
-        // Call the function to make the POST request
-        postData();
-
-      /*
-      const apiRequest = async () => {
-          
-          const {SChash, file} = data;
-        
-          const url = `localhost:8000/audit/upload`;
-          //const url2 = `https://www.theaudiodb.com/api/v1/json/1/search.php?s=${SChash}`;
-          
-          console.log('requesting from index....')
-         const [] = await Promise.all([
-          axios(url),
-          //axios(url2)
-        ]);
   
-        //guardarLetra(letra.data.lyrics);
-       // if (Object.keys(info).length === 0) return null;
-       // guardarInfo(informacion.data.artists[0]);
-        //console.log(informacion);
-  
-         
-          //guardarLetra(resultado.data.lyrics);
-      }
-      apiRequest();
-      */
-  
-    }, [data, data]);
   return (
     <div className={styles.container}>
       <Head>
@@ -119,17 +55,17 @@ const Home: NextPage = () => {
 
         <h1 className={styles.title}>Welcome to AI audit!</h1>
 
-        
-          <div className={styles.grid}>
+
+        <div className={styles.grid}>
           <a className={styles.card} href="https://rainbowkit.com">
             <h2>Create payment &rarr;</h2>
           </a>
         </div>
         <Fragment>
-        <Formulario 
-          inputAI={inputAI} 
-        />
-        </Fragment> 
+          <Formulario
+            user_address={address}
+          />
+        </Fragment>
       </main>
 
 

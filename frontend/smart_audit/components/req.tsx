@@ -1,5 +1,4 @@
 'use client'
-import { createPaymentRequest } from '../utils/requestNetwork';
 import { useEffect, useState } from 'react';
 import { RequestLogicTypes } from '@requestnetwork/types';
 

@@ -7,7 +7,7 @@ import json
 
 import openai
 
-from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import dotenv_values
@@ -106,7 +106,11 @@ async def create_upoad_file_from_address(
 
     content = response.json()
     
-    source_code = content.get("result", {})[0].get("SourceCode")
+    try:
+        source_code = content.get("result", {})[0].get("SourceCode")
+    except Exception as exc:
+        # An invalid address have been provided
+        raise HTTPException(status_code=404, detail=content.get("result", ""))
 
     if source_code is None:
         return "Can't load the source code. Please check if it is available. Else try again later..."
