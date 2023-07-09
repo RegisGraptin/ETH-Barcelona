@@ -6,8 +6,7 @@ import Menu from '../components/Menu'
 
 import React, { Fragment } from "react";
 
-import { useState, useEffect } from "react";
-import { useAccount } from "wagmi";
+import { useState } from "react";
 
 //Diego's import
 import SimpleForm from '../components/SimpleForm'
@@ -16,18 +15,17 @@ import SimpleForm from '../components/SimpleForm'
 import AIResults from '../components/aiResults'
 
 
+import { useAccount, useWalletClient } from "wagmi";
 
 const user = () => {
 
   const [ textResult, setResultado ] = useState('');
+  const [myState, setMyState] = useState(null);
 
-    const [myState, setMyState] = useState(null);
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-          // Code that should only run on the client side
-          setMyState('Initialized on the client side');
-        }
-      }, []);
+  const { address } = useAccount();
+
+
+
     return (
         <div className={styles.container}>
       <Menu />
