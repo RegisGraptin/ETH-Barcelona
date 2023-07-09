@@ -76,12 +76,12 @@ const Home: NextPage = () => {
       <main className={styles.main}> 
         <ConnectButton />
 
-        <h1 className={styles.title}>Welcome to AI audit!</h1>
+        <h1 className={styles.title}>Thank you for keeping building!</h1>
 
 
         <div className={styles.grid}>
           <a className={styles.card} href="https://rainbowkit.com">
-            <h2>Create payment &rarr;</h2>
+            <h2>Check my reward &rarr;</h2>
           </a>
         </div>
         

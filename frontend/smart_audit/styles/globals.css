@@ -107,6 +107,25 @@ p {
   font-size: large;
 }
 
+.text_result_ai {
+  margin-top: 50px;
+}
+
+.black-color {
+  color:black;
+  text-align: right;
+}
+
+.text_result_ai > p {
+  color: black;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.text_result_ai > h2 {
+  text-align: center;
+}
+
 .success {
   color: #0f5132;
   background-color: #d1e7dd;

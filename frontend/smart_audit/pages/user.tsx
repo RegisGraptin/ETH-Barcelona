@@ -1,40 +1,26 @@
-import React, { Fragment } from 'react';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
+import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Menu from '../components/Menu'
-import Head from "next/head";
+
+import React, { Fragment } from "react";
+
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
-// import PaymentRequest from "../components/RequestNetwork";
-import { RequestLogicTypes } from '@requestnetwork/types';
 
 //Diego's import
 import SimpleForm from '../components/SimpleForm'
-//import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import TwoFilesUpload from '../components/TwoFilesUpload'
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
 //import Result from '../components/Result'
-import aiResults from '../components/aiResults'
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import AIResults from '../components/aiResults'
 
 
-import { MuiFileInput } from 'mui-file-input'
-
-import { TextField } from '@mui/material'
-
-//const [activateFileInput, setActivateFileInput] = useState(true);
-//const [ airesults, setResultado ] = useState(false) //#2
-
-
-let activateFileInput = null;
-//let setResultado = null;
-let address = null;
-let result = null;
-let setActivateFileInput = null;
-let airesults = '';
 
 const user = () => {
+
+  const [ textResult, setResultado ] = useState('');
+
     const [myState, setMyState] = useState(null);
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -67,20 +53,12 @@ const user = () => {
         <ConnectButton />
 
         <h1 className={styles.title}>Welcome to AI audit!</h1>
-
-
-        <div className={styles.grid}>
-          <a className={styles.card} href="https://rainbowkit.com">
-            <h2>Create payment &rarr;</h2>
-          </a>
-        </div>
-        
-        
+                
         <Fragment>     
-            <SimpleForm />
+            <SimpleForm resultFunction={setResultado} />
         </Fragment>
 
-        <aiResults airesults={airesults} />  
+        <AIResults text_content={textResult} />  
     
 
       </main>

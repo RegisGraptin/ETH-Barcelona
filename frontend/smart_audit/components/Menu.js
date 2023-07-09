@@ -10,8 +10,8 @@ const Menu = () => {
     return ( 
       <div class="nav">
       <ul>
-        <li><a href="/" class="nav-link">Auditor</a></li>
-        <li><a href="/user" class="nav-link"><em>Developer</em></a></li>
+        <li><a href="/" class="nav-link">Contributor</a></li>
+        <li><a href="/user" class="nav-link"><em>App</em></a></li>
       </ul>
     </div>
      );

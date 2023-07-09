@@ -1,8 +1,18 @@
 import React from 'react';
-const aiResults = ({airesults}) => {
+const AIResults = ({text_content}) => {
+
+    if (text_content === "") {
+        return 
+    }
+
     return ( 
-        <p>AI RESULTS</p>
+        <section class="text_result_ai">
+
+            <h2>AI Generated Audit</h2>
+
+            <p>{ text_content }</p>
+        </section>
      );
 }
  
-export default aiResults;
+export default AIResults;

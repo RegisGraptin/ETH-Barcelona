@@ -7,10 +7,10 @@ import { TextField } from '@mui/material'
 
 import axios from 'axios';
 
-const SimpleForm = ({ resultFunction, user_address }) => {
+const SimpleForm = ({ resultFunction }) => {
 
-    const [smartContractAddress, setSmartContractAddress] = useState("");
-    const [auditFile, setAuditFile] = useState(null);
+    // const [smartContractAddress, setSmartContractAddress] = useState("");
+    const [smartContractFile, setSmartContractFile] = useState(null);
 
     const [error, guardarError] = useState(false);
 
@@ -23,18 +23,12 @@ const SimpleForm = ({ resultFunction, user_address }) => {
         //Todo bien, pasar al componente principal
 
         const formData = new FormData();
-        formData.append("user_address", user_address);
-        formData.append("contract_address", smartContractAddress);
-        formData.append("audit", auditFile);
-
-        console.log(formData);
-
-        // console.log("Result:" + result );
+        formData.append("contract", smartContractFile);
         
 
         axios
             .post(
-                "http://localhost:8000/audit/upload/address",
+                "http://localhost:8000/audit/analyse",
                 formData,
                 {
                     headers: {
@@ -46,17 +40,15 @@ const SimpleForm = ({ resultFunction, user_address }) => {
             .then((res) => {
                 alert("File Upload success");
                 console.log(res);
-                // result = true
-                resultFunction(true);
 
-                // setState
-                // console.log("Result:" + result );
+                let content = res.data;
+                let result = content["result"]["choices"][0]["message"]["content"];
+                
+                // Send back the response of chatgpt
+                resultFunction(result);
             })
             .catch((err) => {
                 console.log(err);
-                // result = false
-                // console.log("Result:" + result );
-              // resultFunction(false);
             });
     };
 
@@ -79,13 +71,16 @@ const SimpleForm = ({ resultFunction, user_address }) => {
                             <div className="row">
                             <div className="col-md-6">
                                     <div className="form-group">
-                                        <h2>Upload the audit</h2>
+                                        <h2>Upload the smart contract</h2>
                                         <MuiFileInput
-                                            value={auditFile}
-                                            onChange={(newFile) => setAuditFile(newFile)}
+                                            value={smartContractFile}
+                                            onChange={(newFile) => setSmartContractFile(newFile)}
                                         />
                                     </div>
                                 </div>
+                            </div>
+                            <div>
+                                <p class="black-color">Price: 0.005 ETH</p>
                             </div>
                             <div className={styles.grid}>
                                 <button
