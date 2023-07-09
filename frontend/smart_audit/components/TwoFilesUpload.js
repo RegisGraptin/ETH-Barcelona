@@ -83,7 +83,7 @@ const TwoFilesUpload = ({ resultFunction, user_address }) => {
                             <div className={styles.grid}>
                                 <button
                                     type="submit"
-                                    className={styles.grid}> Audit
+                                    className={styles.grid}> Contribute
                                 </button>
                             </div>
 
