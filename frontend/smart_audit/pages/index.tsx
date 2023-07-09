@@ -1,30 +1,128 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Button } from "../.next/components/button";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import styles from "../styles/Home.module.css";
-// import PaymentRequest from "../components/RequestNetwork";
-import { RequestLogicTypes } from '@requestnetwork/types';
-interface PaymentRequestProps {
-	token: string | RequestLogicTypes.ICurrency,
-	payerAddress: string,
-	requestAmount: RequestLogicTypes.Amount
-}
+import { parseUnits, zeroAddress } from "viem";
+import { Web3SignatureProvider } from "@requestnetwork/web3-signature";
+import { RequestNetwork, Types, Utils } from "@requestnetwork/request-client.js";
+import { approveErc20, hasErc20Approval, hasSufficientFunds, payRequest } from '@requestnetwork/payment-processor';
+
 const Home: NextPage = () => {
-  const [requestAmount, setRequestAmount] = useState('');
-	const [paymentLink, setPaymentLink] = useState('');
+  // const [requestAmount, setRequestAmount] = useState('');
+	// const [paymentLink, setPaymentLink] = useState('');
+  const { data: walletClient, isError, isLoading } = useWalletClient();
   const { address } = useAccount();
-  const handleCreateRequest = async () => {
-		setRequestAmount('100');
-    const request: PaymentRequestProps = {     
-      token: 'USDT', 
-      payerAddress: address || 'undefined',
-      requestAmount: requestAmount
-  }
-		// const requestId = PaymentRequest(request);
-		// setPaymentLink(`https://pay.request.network/${requestId}`);
+  // const companyAddress = process.env.NEXT_PUBLIC_SAFE_ADDRESS!;
+  const companyAddress = '0x37f160e2A5b986988ce474365E30AB67F47452E4';
+  // const companyAddress = '0xcBc7286aB21866F15A7357CAc97D824CDef6d5F2';
+  const zeroAddress = '0x0000000000000000000000000000000000000000';
+
+  const payUserRequest = async (requestId: string) => {
+    const signatureProvider = new Web3SignatureProvider(walletClient);
+    const requestClient = new RequestNetwork({
+      nodeConnectionConfig: {
+        baseURL: "https://goerli.gateway.request.network/",
+      },
+      signatureProvider,
+    });
+    
+    const request = await requestClient.fromRequestId(requestId);
+    // console.log('request: ');
+    // console.log(request);
+
+    const requestData = request.getData();
+    // console.log('requestData: ');
+    // console.log(requestData);
+
+    if (!(await hasSufficientFunds(requestData, address!))) {
+      throw new Error('You do not have enough funds to pay this request');
+    }
+    if (!(await hasErc20Approval(requestData, address!))) {
+      const approvalTx = await approveErc20(requestData);
+      await approvalTx.wait(1);
+    }
+
+    const tx = await payRequest(requestData);
+    console.log(`tx: ${tx}`);
+
+    const receipt = await tx.wait(1);
+    console.log('receipt: ');
+    console.log(receipt);
+  };
+
+  const handleRequest = async () => {
+    const signatureProvider = new Web3SignatureProvider(walletClient);
+    const requestClient = new RequestNetwork({
+      nodeConnectionConfig: {
+        baseURL: "https://goerli.gateway.request.network/",
+      },
+      signatureProvider,
+    });
+    const requestCreateParameters: Types.ICreateRequestParameters = {
+      requestInfo: {
+        currency: {
+          type: Types.RequestLogic.CURRENCY.ERC20,
+          value: '0xBA62BCfcAaFc6622853cca2BE6Ac7d845BC0f2Dc',
+          network: 'goerli',
+          },
+        // currency: {
+        //   type: Types.RequestLogic.CURRENCY.ETH,
+        //   value: Types.RequestLogic.CURRENCY.ETH,
+        //   network: 'goerli',
+        // },
+        expectedAmount: parseUnits('1', 13
+        ).toString(),
+        // payee: {
+        //   type: Types.Identity.TYPE.ETHEREUM_SMART_CONTRACT,
+        //   value: companyAddress,
+        // },
+        payee: {
+          type: Types.Identity.TYPE.ETHEREUM_SMART_CONTRACT,
+          value: companyAddress,
+        },
+        payer: {
+          type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
+          value: address!,
+        },
+      },
+      paymentNetwork: {        
+        id: Types.Extension.PAYMENT_NETWORK_ID.ERC20_FEE_PROXY_CONTRACT,
+        parameters: {
+          paymentNetworkName: 'goerli',
+          paymentAddress: companyAddress, 
+          feeAddress: zeroAddress,  
+          feeAmount: '0',
+        },
+      },
+      contentData: {
+        // Tip: Consider using rnf_invoice v0.0.3 format from @requestnetwork/data-format
+        reason: '',
+        dueDate: '',
+      },
+      signer: {
+        type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
+        value: address!,
+      },
+    };
+    requestClient
+      .createRequest(requestCreateParameters)
+      .then((request) => {
+        // setStatus(APP_STATUS.PERSISTING_ON_CHAIN);
+        // setRequest(request.getData());
+        return request.waitForConfirmation();
+      })
+      .then((requestData) => {
+        console.log('finished creating');
+        payUserRequest(requestData.requestId)
+        // .then((result) => {
+        //   console.log(result);
+        // });
+      })
+      // .catch((err) => {
+      //   alert(err);
+      // });  
 	};
   return (
     <div className={styles.container}>
@@ -39,16 +137,12 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <ConnectButton />
-
         <h1 className={styles.title}>Welcome to AI audit!</h1>
 
-        <div className={styles.grid}>
-          {/* <Button type='button' onClick={handleCreateRequest}>
-							Create a payment request &rarr;
-					</Button> */}
-          <a className={styles.card} href="https://rainbowkit.com">
-            <h2>Create payment &rarr;</h2>
-          </a>
+        <div className={styles.card}>
+        <button type="button" onClick={(e) => handleRequest()}>
+            Click
+          </button>
         </div>
       </main>
 
